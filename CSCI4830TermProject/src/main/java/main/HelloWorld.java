@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.ArrayList;
+
 import util.DBController;
 import util.DBResults;
 
@@ -26,17 +28,24 @@ public class HelloWorld extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException 
 	{
-		response.getWriter().println("Hello World!");
 		
 		//check for table and/or create table
 		DBController DB = new util.DBController(getServletContext());
 		
 		//test add for both success and no duplicates
 		DB.add(0, 0, 0, 0, 0, 0, "me", "default", "hello world!");
+
+		DB.add(0, 0, 0, 0, 0, 0, "me", "default", "It's ME!");
 		
 		//test get
-		DBResults rs = DB.get("user = 'me'");
-		System.out.println(rs.getMessage());
+		ArrayList<DBResults> rs = DB.get("user = 'me'");
+		for (DBResults result : rs)
+		{
+			response.getWriter().println(result.getMessage());
+		}
+		
+		DB.clearTable();
+		
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) 

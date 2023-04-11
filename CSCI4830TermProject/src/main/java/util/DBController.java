@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.ArrayList;
+
 
 @SuppressWarnings("unused")
 public class DBController
@@ -136,12 +138,14 @@ public class DBController
 	 * developer use only do not allow a user to access directly.
 	 * 
 	 * @param where a String containing the where logic block in the query
-	 * @return the corresponding ResultSet to the query or null if there is an error
+	 * @return the corresponding result set to the query or null if there is an error
 	 */
-	public DBResults get(String where)
+	public ArrayList<DBResults> get(String where)
 	{
 		try //attempt to execute the query
 		{
+			ArrayList<DBResults> ret = new ArrayList<>();
+			
 			DBConnection.getDBConnection(context);
 	        connection = DBConnection.connection;
 	
@@ -150,19 +154,23 @@ public class DBController
             //preparedStatement.setString(1, where);
 	        
 			ResultSet rs = preparedStatement.executeQuery();
-	        
-	        rs.next(); //TODO pass whole set
 	        System.out.println("Query Success!");
 	        
-	        DBResults result = new DBResults(
-	        		rs.getInt("month"), rs.getInt("day"), rs.getInt("year"), 
-	        		rs.getInt("hour"), rs.getInt("minute"), rs.getInt("allDay"), 
-	        		rs.getString("user"), rs.getString("title"), rs.getString("message")
-	        		);
+			while (rs.next())
+			{
+		        DBResults result = new DBResults(
+		        		rs.getInt("month"), rs.getInt("day"), rs.getInt("year"), 
+		        		rs.getInt("hour"), rs.getInt("minute"), rs.getInt("allDay"), 
+		        		rs.getString("user"), rs.getString("title"), rs.getString("message")
+		        		);
+		        ret.add(result);
+			}
 	        
 	        preparedStatement.close();
 	        connection.close();
-			return result;
+			rs.close();
+	        
+	        return ret;
 		}
 		catch (SQLException se) //catch a failed query and terminate
 		{
