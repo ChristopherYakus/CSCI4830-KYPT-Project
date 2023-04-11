@@ -44,7 +44,7 @@ public class HelloWorld extends HttpServlet {
 			response.getWriter().println(result.getMessage());
 		}
 		
-		DB.clearTable();
+		//DB.clearTable();
 		
 	}
 
