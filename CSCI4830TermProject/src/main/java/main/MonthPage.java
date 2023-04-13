@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.YearMonth;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import util.DBConnection;
+import util.DBController;
 import util.DBResults;
 
 @WebServlet("/MonthPage")
@@ -51,20 +53,18 @@ public class MonthPage extends HttpServlet {
 	   * I'm using DBResults because it's an object that has the attributes for an event.
 	   * Not implemented in yet. (4/11, 1:08 pm)
 	   */
-	  DBResults[] monthEventArray = new DBResults[31];
+	  DBResults[] monthEventArray = new DBResults[1000];
 	  
+	  DBController DB = new util.DBController(getServletContext());
+		
+	  ArrayList<DBResults> rs = DB.get("(month = '" + Integer.parseInt(goToMonth) +
+	  "') AND (year = '" + Integer.parseInt(goToYear) + "')");
+		
       Connection connection = null;
       PreparedStatement preparedStatement = null;
       try {
          DBConnection.getDBConnection(getServletContext());
          connection = DBConnection.connection;
-         
-         String selectSQL = "SELECT * FROM events WHERE (MONTH LIKE ?) AND (YEAR LIKE ?)";
-         preparedStatement = connection.prepareStatement(selectSQL);
-         /*preparedStatement.setString(1, theLastNameSQL);
-         preparedStatement.setString(2, theEmailSQL);
-         preparedStatement.setString(3, theZIPSQL);*/
-         
          connection.close();        
       } catch (Exception e) {
          e.printStackTrace();
@@ -110,7 +110,7 @@ public class MonthPage extends HttpServlet {
       //docType += "\n" + "<header><title>" + title + "</title></header>\n" + "<h2 align=\"center\">" + title + "</h2>\n";
       
       docType += "<div class=\"container\"> <div class=\"row\"> <div class=\"span12\"> <table class=\"tb\"> <thead> <tr> <th colspan=\"7\"> <span class=\"btn-group\"><a class=\"btn active\">";
-      docType += printMonth(Integer.parseInt(goToYear), Integer.parseInt(goToMonth));
+      docType += printMonth(Integer.parseInt(goToYear), Integer.parseInt(goToMonth), rs, response);
       
       out.println(docType);
 
@@ -153,7 +153,7 @@ public class MonthPage extends HttpServlet {
       doGet(request, response);
    }
    
-   static String printMonth(int year, int month) {
+   static String printMonth(int year, int month, ArrayList<DBResults> rs, HttpServletResponse response) {
        YearMonth ym = YearMonth.of(year, month);
        int counter = 1;
        String result = Month.of(month) + " " + year + "</a></span> </th> </tr> <tr> <th>Sun</th> <th>Mon</th> <th>Tue</th> <th>Wed</th> <th>Thu</th> <th>Fri</th> <th>Sat</th> </tr> </thead> <tbody>";
@@ -165,7 +165,20 @@ public class MonthPage extends HttpServlet {
            }
 
        for (int i = 1; i <= ym.getMonth().length(ym.isLeapYear()); i++, counter++) {
-    	   result += "<td>" + i + "</td>";
+    	   /* If a day has an event, the text becomes hyperlinked. 
+    	    * 
+    	    */
+    	   String wonky = "";
+    	   wonky = "<td>" + i + "</td>";
+    	   for (DBResults res : rs)
+    	   {
+    		   if (res.getDay() == i)
+    		   {
+    			   wonky = "<td><a href=/CSCI4830TermProject/UNFINISHED.java>" + i + "</a></td>";
+    			   break;
+    		   }
+    	   }
+    	   result += wonky;
            // Create new row when counter % 7 aka is on Saturday.
            if (counter % 7 == 0) {
         	   result += "</tr> <tr>";
@@ -173,4 +186,5 @@ public class MonthPage extends HttpServlet {
        }
        return result + "</tr></tbody></table></div></div></div>";
    }
+   
 }
