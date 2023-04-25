@@ -37,11 +37,14 @@ public class HelloWorld extends HttpServlet {
 
 		DB.add(0, 0, 0, 0, 0, 0, "me", "default", "It's ME!");
 		
+		DB.add(0, 0, 0, 0, 0, 0, "you", "default", "It's NOT ME!");
+		
 		//test get
 		ArrayList<DBResults> rs = DB.get("user = 'me'");
 		for (DBResults result : rs)
 		{
-			response.getWriter().println(result.getMessage());
+			response.getWriter().println(result.getMessage() + "\n");
+			
 		}
 		
 		//DB.clearTable();

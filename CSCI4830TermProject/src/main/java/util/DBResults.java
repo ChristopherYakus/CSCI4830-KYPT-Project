@@ -1,7 +1,7 @@
 package util;
 
 /**
- * stupid method because ResultSet closes itself. 
+ * stupid object because ResultSet closes itself. 
  * @author chris
  *
  */
@@ -68,5 +68,10 @@ public class DBResults
 	public String getMessage()
 	{
 		return message;
+	}
+	
+	public String toString()
+	{
+		return null; //TODO return title and message
 	}
 }

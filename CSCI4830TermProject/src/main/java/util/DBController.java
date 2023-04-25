@@ -94,7 +94,7 @@ public class DBController
 	 * @param user
 	 * @param title
 	 * @param message
-	 * @return
+	 * @return True if the add is successful.
 	 */
 	public boolean add(int month, int day, int year, int hour, int minute, int allDay, 
 			String user, String title, String message)//input in fields
@@ -187,10 +187,14 @@ public class DBController
 	
 	public boolean delete()
 	{
-		//TODO remove entry where a PK condition
+		//TODO remove entry where a  condition
 		return false;
 	}
 	
+	/**
+	 * Removes the table from the database.
+	 * @return True if the table clear operation is successful.
+	 */
 	public boolean clearTable()
 	{
 		DBConnection.getDBConnection(context);
