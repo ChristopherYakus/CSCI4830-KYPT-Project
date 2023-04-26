@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -30,21 +31,43 @@ public class SignUp extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String user = request.getParameter("uname");
 		String pass = request.getParameter("pwd");
-		
+		PreparedStatement preparedStatement = null;
 		Connection connection = null;
-		String signupInsert = "INSERT INTO user (username, password) values (?, ?)";
-		//TODO: don't use prepared statement if username already exists in database
-		//create some sort of message to indicate failure and redirect to home screen
-		//maybe use a statement that checks if the username exists in the table as the if condition
-		//if either username or password are blank automatically fail, display message and send back to sign up page 
+		
 		try {
 			DBConnection.getDBConnection(getServletContext());
 	        connection = DBConnection.connection;
+	        String signupInsert = "INSERT INTO user (username, password) values (?, ?)";
+	        String signupCheck = "SELECT * FROM user WHERE username LIKE ?";
+	        preparedStatement = connection.prepareStatement(signupCheck);
+	        preparedStatement.setString(1, user);
+	         
+	        ResultSet rs = preparedStatement.executeQuery();
+	        
 	        //If username and password are both filled in and valid
-	        PreparedStatement preparedStmt = connection.prepareStatement(signupInsert);
-	        preparedStmt.setString(1, user);
-	        preparedStmt.setString(2, pass);
-	        preparedStmt.execute();
+	        if (!rs.next()) {
+	        	PreparedStatement preparedStmt = connection.prepareStatement(signupInsert);
+	        	preparedStmt.setString(1, user);
+	        	preparedStmt.setString(2, pass);
+	        	preparedStmt.execute();
+	        	response.sendRedirect("LogIn.html");
+	        }
+	        //if user already exists
+	        response.setContentType("text/html");
+	    	PrintWriter out = response.getWriter();
+	    	String title = "Account creation failed";
+	    	String docType = "<!doctype html public \"-//w3c//dtd html 4.0 " + //
+	    	      "transitional//en\">\n"; //
+	    	out.println(docType + //
+	    	      "<html>\n" + //
+	    	      "<head><title>" + title + "</title></head>\n" + //
+	    	      "<body bgcolor=\"#f0f0f0\">\n" + //
+	    	      "<h1 align=\"center\">" + title + "</h1>\n" + 
+	    	      "<section align=\"center\"> Username already exists.\n" +
+	    	      "</section>");
+	    	    
+	    	out.println("<a href=/CSCI4830TermProject/SignUp.html>Return to signup</a> <br>");
+	        out.println("</body></html>");
 	        connection.close();
 		} catch (Exception e) {
 	        e.printStackTrace();
