@@ -50,43 +50,65 @@ public class SignUp extends HttpServlet {
 	        	preparedStmt.setString(1, user);
 	        	preparedStmt.setString(2, pass);
 	        	preparedStmt.execute();
-	        	response.sendRedirect("LogIn.html");
-	        }
-	        //if user already exists
-	        response.setContentType("text/html");
-	    	PrintWriter out = response.getWriter();
-	    	String title = "Account creation failed";
-	    	String docType = "<!doctype html public \"-//w3c//dtd html 4.0 " + //
-	    	      "transitional//en\">\n"; //
-	    	out.println(docType + //
-	    	      "<html>\n" + //
-	    	      "<head><title>" + title + "</title></head>\n" + //
-	    	      "<body bgcolor=\"#f0f0f0\">\n" + //
-	    	      "<h1 align=\"center\">" + title + "</h1>\n" + 
-	    	      "<section align=\"center\"> Username already exists.\n" +
-	    	      "</section>");
+	        	//response.sendRedirect("LogIn.html");
+	        	response.setContentType("text/html");
+	    		PrintWriter out = response.getWriter();
+	    		String title = "Enter Birthday";
+	    		String docType = "<!doctype html public \"-//w3c//dtd html 4.0 " + //
+	          	"transitional//en\">\n"; //
+	    		out.println(docType + //
+	          	"<html>\n" + //
+	          	"<head><title>" + title + "</title></head>\n" + //
+	          	"<body bgcolor=\"#f0f0f0\">\n" + //
+	          	"<h1 align=\"center\">" + title + "</h1>\n" +
+	    		"<form action=\"InsertBirthday\" method=\"POST\">" +
+              		"Day <input type=\"text\" name=\"bday\" required> <br />" +
+              		"<label for=\"month\">Month: </label>\r\n"
+              	      	    + "		<select name=\"bmonth\" id=\"month\">\r\n"
+              	      	    + "  		<option value=\"1\" selected>January</option>\r\n"
+              	      	    + "  		<option value=\"2\">February</option>\r\n"
+              	      	    + "  		<option value=\"3\">March</option>\r\n"
+              	      	    + "  		<option value=\"4\">April</option>\r\n"
+              		      	+ "  		<option value=\"5\">May</option>\r\n"
+              		      	+ "  		<option value=\"6\">June</option>\r\n"
+              		      	+ "  		<option value=\"7\">July</option>\r\n"
+              		      	+ "  		<option value=\"8\">August</option>\r\n"
+              		      	+ "  		<option value=\"9\">September</option>\r\n"
+              		      	+ "  		<option value=\"10\">October</option>\r\n"
+              		      	+ "  		<option value=\"11\">November</option>\r\n"
+              		      	+ "  		<option value=\"12\">December</option>\r\n"
+              	      	    + "			</select> <br />" +
+              		"Year <input type=\"text\" name=\"byear\" required> <br />" +
+              		"<input type=\"submit\" value=\"Submit\" />" +
+              	"</form>");
+	        } else {
+	        	//if user already exists
+	        	response.setContentType("text/html");
+	        	PrintWriter out = response.getWriter();
+	        	String title = "Account creation failed";
+	        	String docType = "<!doctype html public \"-//w3c//dtd html 4.0 " + //
+	        			"transitional//en\">\n"; //
+	        	out.println(docType + //
+	        			"<html>\n" + //
+	        			"<head><title>" + title + "</title></head>\n" + //
+	        			"<body bgcolor=\"#f0f0f0\">\n" + //
+	        			"<h1 align=\"center\">" + title + "</h1>\n" + 
+	        			"<section align=\"center\" margin=\"auto\"> Username already exists.\n" +
+	        			"</section>");
 	    	    
-	    	out.println("<a href=/CSCI4830TermProject/SignUp.html>Return to signup</a> <br>");
-	        out.println("</body></html>");
+	        	out.println("<a href=/CSCI4830TermProject/SignUp.html>Return to signup</a> <br>");
+	        	out.println("</body></html>");
+	        }
 	        connection.close();
 		} catch (Exception e) {
 	        e.printStackTrace();
 	    }
 		
 		//TODO: set up page with boxes for birthday submission and button to redirect to login page
-		response.setContentType("text/html");
-	    PrintWriter out = response.getWriter();
-	    String title = "Enter Birthday";
-	    String docType = "<!doctype html public \"-//w3c//dtd html 4.0 " + //
-	          "transitional//en\">\n"; //
-	    out.println(docType + //
-	          "<html>\n" + //
-	          "<head><title>" + title + "</title></head>\n" + //
-	          "<body bgcolor=\"#f0f0f0\">\n" + //
-	          "<h1 align=\"center\">" + title + "</h1>\n");
+		
 	    
 	    //TODO: Set up prepared statement to insert birthday entry
-		response.sendRedirect("LogIn.html");	//temp for presentation
+		//response.sendRedirect("LogIn.html");	//temp for presentation
 	}
 
 	/**
