@@ -12,9 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import util.DBConnection;
 
-/**
- * Servlet implementation class InsertBirthday
- */
 @WebServlet("/InsertBirthday")
 public class InsertBirthday extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -30,7 +27,7 @@ public class InsertBirthday extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String user = request.getParameter("uname");
+		String user = (String)request.getSession().getAttribute("newUser");
 		String day = request.getParameter("bday");
 		String month = request.getParameter("bmonth");
 		String year = request.getParameter("byear");
@@ -52,11 +49,14 @@ public class InsertBirthday extends HttpServlet {
 	        preparedStatement.setInt(4, yearInt);
 	        preparedStatement.setString(5, "Birthday");
         	preparedStatement.execute();
-        	response.sendRedirect("LogIn.html");
         	connection.close();
+        	response.sendRedirect("LogIn.html");	//go back to login page after birthday is entered
+        	
 		} catch (Exception e) {
 	        e.printStackTrace();
 	    }
+		
+		response.sendRedirect("LogIn.html");
 	}
 
 	/**

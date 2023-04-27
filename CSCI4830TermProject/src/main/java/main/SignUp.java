@@ -46,11 +46,13 @@ public class SignUp extends HttpServlet {
 	        
 	        //If username and password are both filled in and valid
 	        if (!rs.next()) {
+	        	request.getSession().setAttribute("newUser", user);
 	        	PreparedStatement preparedStmt = connection.prepareStatement(signupInsert);
 	        	preparedStmt.setString(1, user);
 	        	preparedStmt.setString(2, pass);
 	        	preparedStmt.execute();
-	        	//response.sendRedirect("LogIn.html");
+	        	
+	        	//After successfully creating a new user present a form for getting their birthday
 	        	response.setContentType("text/html");
 	    		PrintWriter out = response.getWriter();
 	    		String title = "Enter Birthday";
@@ -103,12 +105,6 @@ public class SignUp extends HttpServlet {
 		} catch (Exception e) {
 	        e.printStackTrace();
 	    }
-		
-		//TODO: set up page with boxes for birthday submission and button to redirect to login page
-		
-	    
-	    //TODO: Set up prepared statement to insert birthday entry
-		//response.sendRedirect("LogIn.html");	//temp for presentation
 	}
 
 	/**
