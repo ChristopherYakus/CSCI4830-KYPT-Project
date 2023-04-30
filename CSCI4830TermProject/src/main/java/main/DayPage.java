@@ -1,6 +1,6 @@
 package main;
 /**
- * @file MonthPage.java
+ * @file DayPage.java
  */
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -18,42 +18,32 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import javax.servlet.*;
+
 import util.DBConnection;
 import util.DBController;
 import util.DBResults;
 
-@WebServlet("/MonthPage")
-public class MonthPage extends HttpServlet {
+@WebServlet("/DayPage")
+public class DayPage extends HttpServlet {
    private static final long serialVersionUID = 1L;
 
-   public MonthPage() {
+   public DayPage() {
       super();
    }
 
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	  //Default Month is January 2000.
-	  String goToMonth; //TECHNICALLY ONLY NUMBERS RIGHT NOW
-	  String goToYear; 
-	  goToMonth = request.getParameter("goToMonth");
-	  goToYear = request.getParameter("goToYear");
-	  if (goToMonth == null)
-	  {
-		  goToMonth = "1";
-			System.out.println("Month is null! Going to default value (January).");
+	  String queryString = request.getQueryString();
+	  StringBuilder url = new StringBuilder();
+	   
+	  // IMPORTANT!!!! Currently, what happens if the user enters zero URL parameters? You get a whole loada
+	  // bologna, that's what. I could either throw a "Please select a date first" or a default January 1st, 2000.
+	  if (queryString != null) {
+		  url.append("?").append(queryString);
 	  }
-	  if (goToYear == null)
-	  {
-		  goToYear = "2000";
-			System.out.println("Year is null! Going to default value (2000).");
-	  }
-	
-	  /* 4/29/23 2:15 pm
-	   * MonthPage.java now works with currently logged in users.
-	   * Also fixed InsertBirthday.java.
-	   */
-	  
-	  // if current user does not exist or program is being mean, print all non-private aka non-user made events.
-	  // !!!! not finished. the above basically means holidays only, and i have yet to figure out how to do holidays, so
+	    
+	  System.out.println(queryString); //when this is blank, it prints out "null". use this to your advantage!
+	  System.out.println(request.getParameter("month"));
 	  
 	  DBController DB = new util.DBController(getServletContext());
 	  ArrayList<DBResults> rs;
@@ -62,26 +52,27 @@ public class MonthPage extends HttpServlet {
 	  loggedInUser += request.getSession().getAttribute("user");
 	  if (loggedInUser.equals("null"))
 	  {
-		  rs = DB.get("(month = '" + Integer.parseInt(goToMonth) +
-				  "') AND (year = '" + Integer.parseInt(goToYear) + "')");
+		  rs = DB.get("(month = '" + request.getParameter("month") +
+				  "') AND (day = '" + request.getParameter("day") +
+				  "') AND (year = '" + request.getParameter("year") + "')");
 	  }
 	  else
 	  {
-		  rs = DB.get("(month = '" + Integer.parseInt(goToMonth) +
-				  "') AND (year = '" + Integer.parseInt(goToYear) +
+		  // Get regular events.
+		  rs = DB.get("(month = '" + request.getParameter("month") +
+				  "') AND (day = '" + request.getParameter("day") +
+				  "') AND (year = '" + request.getParameter("year") +
+				  "') AND (user = '" + loggedInUser + "')");
+		  // Then account for birthdays, which occur every year *after* the specified year.
+		  // ...unfinished, though. I get around to it tomorrow.
+		  rs = DB.get("(month = '" + request.getParameter("month") +
+				  "') AND (day = '" + request.getParameter("day") +
+				  "') AND (year = '" + request.getParameter("year") +
 				  "') AND (user = '" + loggedInUser + "')");
 	  }
 	  System.out.println(request.getSession().getAttribute("user"));
-	
-	  for (DBResults res : rs)
-	  {
-             System.out.println("Title: " + res.getTitle());
-             System.out.println("User: " + res.getUser());
-             System.out.println("Month: " + res.getMonth());
-             System.out.println("Day: " + res.getDay());
-             System.out.println("Year: " + res.getYear() + "\n");
-	  }
 
+	
       Connection connection = null;
       PreparedStatement preparedStatement = null;
       try {
@@ -95,7 +86,14 @@ public class MonthPage extends HttpServlet {
       // Set response content type
       response.setContentType("text/html");
       PrintWriter out = response.getWriter();
-      String title = "Month";
+      
+      String title = "Events for ";
+
+      String monthGenerate = "" + Month.of(Integer.parseInt(request.getParameter("month")));
+      monthGenerate = monthGenerate.substring(0, 1).toUpperCase() + monthGenerate.substring(1).toLowerCase();
+      title += monthGenerate + " " + Integer.parseInt(request.getParameter("day")) + ", " +
+    		  						 Integer.parseInt(request.getParameter("year"));
+      
       String docType = "<!doctype html public \"-//w3c//dtd html 4.0 " + "transitional//en\">\n";
       docType += "<html>\n" + "<header><title>" + title + "</title></header>\n" + "<body bgcolor=\"#f0f0f0\">\n" + "<h2 align=\"center\">" + title + "</h2>\n";
       /*docType += "<html>" +
@@ -131,9 +129,23 @@ public class MonthPage extends HttpServlet {
 "</head>";*/
       //docType += "\n" + "<header><title>" + title + "</title></header>\n" + "<h2 align=\"center\">" + title + "</h2>\n";
       
-      docType += "<div class=\"container\"> <div class=\"row\"> <div class=\"span12\"> <table class=\"tb\"> <thead> <tr> <th colspan=\"7\"> <span class=\"btn-group\"><a class=\"btn active\">";
-      docType += printMonth(Integer.parseInt(goToYear), Integer.parseInt(goToMonth), rs, response);
-      
+      //!!! IMPORTANT: Do we really need "user" to be printed? It's a bit redundant...
+      for (DBResults res : rs)
+	  {
+    	  docType += ("Title: " + res.getTitle() + "<br>" + 
+    			      "User: " + res.getUser() + "<br>" +
+    			      "\"" + res.getMessage() + "\"<br>");
+    	  // If event is not all day, aka 0, state when the event starts (HH:MM)
+    	  if (res.getAllDay() == 0)
+    	  {
+    		  docType += ("This event starts at " + res.getHour() + ":" + res.getMinute() + ".<br><br>");
+    	  }
+    	  else 
+    	  {
+    		  docType += ("This event is an all day occurence.<br><br>");
+    	  }
+	  }
+
       out.println(docType);
 
       //out.println("<a href=/webproject-ex-0214-Perkins/insert_perkins.html>Insert Data</a> <br>");
@@ -142,7 +154,7 @@ public class MonthPage extends HttpServlet {
       //Entering a character that is not a number will throw an error!
       out.println("<section>"
       		+ "	Go to:"
-      		+ "	<form action=\"MonthPage\" method=\"POST\">"
+      		+ "	<form action=\"DayPage\" method=\"POST\">"
       		+ "		<label for=\"month\">Month: </label>\r\n"
       	    + "		<select name=\"goToMonth\" id=\"month\">\r\n"
       	    + "  		<option value=\"1\" selected>January</option>\r\n"
@@ -174,45 +186,4 @@ public class MonthPage extends HttpServlet {
    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       doGet(request, response);
    }
-   
-   static String printMonth(int year, int month, ArrayList<DBResults> rs, HttpServletResponse response) {
-       YearMonth ym = YearMonth.of(year, month);
-       int counter = 1;
-       // Convert month integer into proper capitalized word
-       String result = "" + Month.of(month);
-       result = result.substring(0, 1).toUpperCase() + result.substring(1).toLowerCase();
-       
-       result += " " + year + "</a></span> </th> </tr> <tr> <th>Sun</th> <th>Mon</th> <th>Tue</th> <th>Wed</th> <th>Thu</th> <th>Fri</th> <th>Sat</th> </tr> </thead> <tbody>";
-
-       int day = LocalDate.of(year, month, 1).getDayOfWeek().getValue();
-       if (day != 7)
-           for (int i = 0; i < day; i++, counter++) {
-        	   result += "<td></td>";
-           }
-
-       for (int i = 1; i <= ym.getMonth().length(ym.isLeapYear()); i++, counter++) {
-    	   /* If a day has an event, the text becomes hyperlinked. 
-    	    */
-    	   String dayAddition = "<td>" + i + "</td>";
-    	   String urlAddition = "";
-    	   for (DBResults res : rs)
-    	   {
-    		   if (res.getDay() == i)
-    		   {
-    			   urlAddition = "?month=" + res.getMonth() + "&day=" + res.getDay() + "&year=" + res.getYear();
-    			   dayAddition = "<td><a href=/CSCI4830TermProject/DayPage?month=" +
-    			   res.getMonth() + "&day=" + res.getDay() + "&year=" + res.getYear() + ">" + i + "</a></td>";
-    			   //http://localhost:8080/CSCI4830TermProject/DayPage?month=10&day=29&year=2001
-    			   break;
-    		   }
-    	   }
-    	   result += dayAddition;
-           // Create new row when counter % 7 aka is on Saturday.
-           if (counter % 7 == 0) {
-        	   result += "</tr> <tr>";
-           }
-       }
-       return result + "</tr></tbody></table></div></div></div>";
-   }
-   
 }

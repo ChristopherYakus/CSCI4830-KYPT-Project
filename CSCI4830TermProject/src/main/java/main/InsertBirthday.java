@@ -3,6 +3,8 @@ package main;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.time.Month;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import util.DBConnection;
+import util.DBController;
+import util.DBResults;
 
 @WebServlet("/InsertBirthday")
 public class InsertBirthday extends HttpServlet {
@@ -41,6 +45,7 @@ public class InsertBirthday extends HttpServlet {
 		try {
 			DBConnection.getDBConnection(getServletContext());
 	        connection = DBConnection.connection;
+	        /* Originally:
 	        String bdayInsert = "INSERT INTO events (user, day, month, year, title) values (?, ?, ?, ?, ?)";
 	        preparedStatement = connection.prepareStatement(bdayInsert);
 	        preparedStatement.setString(1, user);
@@ -48,13 +53,34 @@ public class InsertBirthday extends HttpServlet {
 	        preparedStatement.setInt(3, monthInt);
 	        preparedStatement.setInt(4, yearInt);
 	        preparedStatement.setString(5, "Birthday");
-        	preparedStatement.execute();
+		    */
+	        
+	        // Fixed:
+	        String bdayInsert = "INSERT INTO events (month, day, year, hour, minute, allDay, user, title, message) "
+		 			+ "values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	        preparedStatement = connection.prepareStatement(bdayInsert);
+	        preparedStatement.setInt(1, monthInt); // month
+	        preparedStatement.setInt(2, dayInt); // day
+	        preparedStatement.setInt(3, yearInt); // year
+	        preparedStatement.setInt(4, 0); // Setting hour to 0
+	        preparedStatement.setInt(5, 0); // Setting minute to 0
+	        preparedStatement.setInt(6, 1); // Setting allDay to 1 (means it's your birthday all day)
+	        preparedStatement.setString(7, user); // Setting user to user
+	        preparedStatement.setString(8, user + "'s Birthday"); // Setting title to "[user]'s Birthday"
+	        String monthGenerate = "" + Month.of(monthInt);
+	        monthGenerate = monthGenerate.substring(0, 1).toUpperCase() + monthGenerate.substring(1).toLowerCase();
+	        preparedStatement.setString(9, user + " was born on " + monthGenerate + " " + 
+	        							dayInt + ", " + yearInt + "."); // Setting message
+	        //
+	        
+        	preparedStatement.execute();	
         	connection.close();
-        	response.sendRedirect("LogIn.html");	//go back to login page after birthday is entered
+        	
+        	//response.sendRedirect("LogIn.html");	//go back to login page after birthday is entered
         	
 		} catch (Exception e) {
-	        e.printStackTrace();
-	    }
+		        e.printStackTrace();
+			}
 		
 		response.sendRedirect("LogIn.html");
 	}
