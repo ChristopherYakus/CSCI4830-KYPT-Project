@@ -121,14 +121,14 @@ public class DBController
             preparedStatement.close();
             connection.close();
             
-            System.out.println("Item successfully added");
+            System.out.println("Item successfully added: " + title);
             
             return true;
 		}
 		catch (SQLException se)
 		{
 			//se.printStackTrace();
-			System.out.println("Cannot add. Uncomment stack trace in DBController.add() and try again");
+			System.out.println("Cannot add " + title + " " + year + ". Uncomment stack trace in DBController.add() and try again");
 			return false;
 		}
 	}

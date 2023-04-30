@@ -69,9 +69,4 @@ public class DBResults
 	{
 		return message;
 	}
-	
-	public String toString()
-	{
-		return null; //TODO return title and message
-	}
 }
