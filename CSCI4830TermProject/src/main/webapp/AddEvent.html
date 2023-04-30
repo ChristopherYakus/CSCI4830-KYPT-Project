@@ -1,0 +1,74 @@
+<html>
+	<head>
+		<style>
+			header 
+			{
+			    background-color:black;
+			    color:white;
+			    text-align:center;
+			    padding:5px;	 
+			}
+			nav 
+			{
+			    line-height:30px;
+			    background-color:#eeeeee;
+			    height:300px;
+			    width:100px;
+			    float:left;
+			    padding:5px;	      
+			}
+			section 
+			{
+			    width:500px;
+			    float:left;
+			    padding:10px;	 	 
+			}
+			footer 
+			{
+			    background-color:black;
+			    color:white;
+			    clear:both;
+			    text-align:center;
+			    padding:5px;	 	 
+			}
+		</style>
+	</head>
+
+	<body>
+		<header>
+			<h1> Create New Event </h1>
+		</header>
+
+		<nav>
+			<a href="/CSCI4830TermProject/LogIn.html">Log In</a> <br>
+			<!--TODO make all nav points-->
+		</nav>
+
+		<section>
+			<h1>Enter The following event details</h1>
+
+			<form action="AddEvent" method="POST">
+				  <label for="date">Date:</label>
+				  <input type="date" id="date" name="date" required>
+				  
+				  <label for="time">Time:</label>
+				  <input type="time" id="time" name="time">
+				  
+				  <label for="allday">All Day:</label>
+				  <input type="checkbox" id="allday" name="allday"> <br><br>
+				  
+				  <label for="text1">Title:</label>
+				  <input type="text" id="title" name="title" required><br>
+				  
+				  <label for="text2">Details:</label><br>
+				  <textarea id="text2" name="message" cols="50" rows="5" required></textarea><br>
+				  
+				  <input type="submit" value="Create">
+			</form>
+		</section>
+
+		<footer>
+			Copyright
+		</footer>
+	</body>
+</html>

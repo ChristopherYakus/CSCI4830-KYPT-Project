@@ -66,7 +66,7 @@ public class DBController
 					+ "user VARCHAR(20) NOT NULL,"
 					+ "title VARCHAR(30) NOT NULL,"
 					+ "message VARCHAR(200) NOT NULL,"
-					+ "PRIMARY KEY(title, message)"
+					+ "PRIMARY KEY(month, day, year, title)"
 					+ ");";
 
        	 	try 
@@ -129,6 +129,55 @@ public class DBController
 		{
 			//se.printStackTrace();
 			System.out.println("Cannot add " + title + " " + year + ". Uncomment stack trace in DBController.add() and try again");
+			return false;
+		}
+	}
+	
+	/**
+	 * Adds an event into the database from a DBResults object
+	 * @param month
+	 * @param day
+	 * @param year
+	 * @param hour
+	 * @param minute
+	 * @param allDay
+	 * @param user
+	 * @param title
+	 * @param message
+	 * @return True if the add is successful.
+	 */
+	public boolean add(DBResults rs)//input in fields
+	{
+		try
+		{
+			DBConnection.getDBConnection(context);
+	        connection = DBConnection.connection;
+	
+	   	 	String selectSQL = "INSERT INTO events (month, day, year, hour, minute, allDay, user, title, message) "
+	   	 			+ "values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	        preparedStatement = connection.prepareStatement(selectSQL);
+            preparedStatement.setString(1, rs.getMonth()+"");
+            preparedStatement.setString(2, rs.getDay()+"");
+            preparedStatement.setString(3, rs.getYear()+"");
+            preparedStatement.setString(4, rs.getHour()+"");
+            preparedStatement.setString(5, rs.getMinute()+"");
+            preparedStatement.setString(6, rs.getAllDay()+"");
+            preparedStatement.setString(7, rs.getUser());
+            preparedStatement.setString(8, rs.getTitle());
+            preparedStatement.setString(9, rs.getMessage());
+            
+            preparedStatement.execute();
+            preparedStatement.close();
+            connection.close();
+            
+            System.out.println("Item successfully added: " + rs.getTitle());
+            
+            return true;
+		}
+		catch (SQLException se)
+		{
+			//se.printStackTrace();
+			System.out.println("Cannot add " + rs.getTitle() + " " + rs.getYear() + ". Uncomment stack trace in DBController.add() and try again");
 			return false;
 		}
 	}
