@@ -60,16 +60,22 @@ public class MonthPage extends HttpServlet {
 	  
 	  String loggedInUser = "";
 	  loggedInUser += request.getSession().getAttribute("user");
+	  // If no user is logged in, the accessible events are holidays.
 	  if (loggedInUser.equals("null"))
 	  {
 		  rs = DB.get("(month = '" + Integer.parseInt(goToMonth) +
-				  "') AND (year = '" + Integer.parseInt(goToYear) + "')");
+				  "') AND (year = '" + Integer.parseInt(goToYear) + 
+				  "') AND (user = 'holidays')");
 	  }
+	  // If a user is logged in, the accessible events are events that they have created AND holidays.
 	  else
 	  {
-		  rs = DB.get("(month = '" + Integer.parseInt(goToMonth) +
+		  rs = DB.get("((month = '" + Integer.parseInt(goToMonth) +
 				  "') AND (year = '" + Integer.parseInt(goToYear) +
-				  "') AND (user = '" + loggedInUser + "')");
+				  "') AND (user = '" + loggedInUser + "') OR " +
+				  "(month = '" + Integer.parseInt(goToMonth) +
+				  "') AND (year = '" + Integer.parseInt(goToYear) + 
+				  "') AND (user = 'holidays'))");
 	  }
 	  System.out.println(request.getSession().getAttribute("user"));
 	
@@ -97,46 +103,56 @@ public class MonthPage extends HttpServlet {
       PrintWriter out = response.getWriter();
       String title = "Month";
       String docType = "<!doctype html public \"-//w3c//dtd html 4.0 " + "transitional//en\">\n";
-      docType += "<html>\n" + "<header><title>" + title + "</title></header>\n" + "<body bgcolor=\"#f0f0f0\">\n" + "<h2 align=\"center\">" + title + "</h2>\n";
-      /*docType += "<html>" +
-"<head>" +
-"<style>" +
-"header {" +
-    "background-color:black;" +
-    "color:white;" +
-    "text-align:center;" +
-    "padding:5px;" +	 
-"}" +
-"nav {" +
-    "line-height:30px;" +
-    "background-color:#eeeeee;" +
-    "height:300px;" +
-    "width:100px;" +
-    "float:left;" +
-    "padding:5px;" +	      
-"}" +
-"section {" +
-    "width:350px;" +
-    "float:left;" +
-    "padding:10px;" +	 	 
-"}" +
-"footer {" +
-    "background-color:black;" +
-    "color:white;" +
-    "clear:both;" +
-    "text-align:center;" +
-    "padding:5px;" +	 	 
-"}" +
-"</style>" +
-"</head>";*/
-      //docType += "\n" + "<header><title>" + title + "</title></header>\n" + "<h2 align=\"center\">" + title + "</h2>\n";
-      
-      docType += "<div class=\"container\"> <div class=\"row\"> <div class=\"span12\"> <table class=\"tb\"> <thead> <tr> <th colspan=\"7\"> <span class=\"btn-group\"><a class=\"btn active\">";
+      docType += "<html>\r\n"
+      		+ "<head>\r\n"
+      		+ "<style>\r\n"
+      		+ "header {\r\n"
+      		+ "    background-color:black;\r\n"
+      		+ "    color:white;\r\n"
+      		+ "    text-align:center;\r\n"
+      		+ "    padding:5px;	 \r\n"
+      		+ "}\r\n"
+      		+ "nav {\r\n"
+      		+ "    line-height:30px;\r\n"
+      		+ "    background-color:#eeeeee;\r\n"
+      		+ "    height:300px;\r\n"
+      		+ "    width:100px;\r\n"
+      		+ "    float:left;\r\n"
+      		+ "    padding:5px;	      \r\n"
+      		+ "}\r\n"
+      		+ "section {\r\n"
+      		+ "    width:350px;\r\n"
+      		+ "    float:left;\r\n"
+      		+ "    padding:10px;	 	 \r\n"
+      		+ "}\r\n"
+      		+ "footer {\r\n"
+      		+ "    background-color:black;\r\n"
+      		+ "    color:white;\r\n"
+      		+ "    clear:both;\r\n"
+      		+ "    text-align:center;\r\n"
+      		+ "    padding:5px;	 	 \r\n"
+      		+ "}\r\n"
+      		+ "table, th, td {\r\n"
+      		+ "    border:1px solid black;\r\n"
+      		+ "}"
+      		+ "</style>\r\n"
+      		+ "</head>\r\n"
+      		+ "\r\n"
+      		+ "<body>\r\n"
+      		+ "<header>\r\n"
+      		+ "<h1> Log In </h1>\r\n"
+      		+ "</header>\r\n"
+      		+ "\r\n"
+      		+ "<nav>\r\n"
+      		+ "<form action=\"SearchEvent\" method=\"POST\">\r\n"
+      		+ "<label for=\"search\">Search event:</label>\r\n"
+      		+ "  <input type=\"text\" id=\"search\" name=\"search\" size=\"10\">\r\n"
+      		+ "<input type=\"submit\" value=\"Submit\" />	</form>\r\n"
+      		+ "</nav>";     
+      docType += "<div> <table> <thead> <tr> <th colspan=\"7\">";
       docType += printMonth(Integer.parseInt(goToYear), Integer.parseInt(goToMonth), rs, response);
       
       out.println(docType);
-
-      //out.println("<a href=/webproject-ex-0214-Perkins/insert_perkins.html>Insert Data</a> <br>");
       
       //!!!!Note: Data validation for inputting year has not been implemented in yet.
       //Entering a character that is not a number will throw an error!
@@ -164,11 +180,12 @@ public class MonthPage extends HttpServlet {
       		+ "	</form>"
       		+ ""
       		+ "</section>");
-      out.println(//"<footer>\r\n"
-      		//+ "Copyright Nathan Perkins\r\n"
-      		//+ "</footer>\r\n"
-      		"</body>\r\n"
-      		+ "</html>");
+      out.println("</body>\r\n"
+      	+ "</html> <footer>\r\n"
+      	+ "Copyright\r\n"
+      	+ "</footer>\r\n"
+      	+ "</body>\r\n"
+      	+ "</html>");
    }
 
    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -182,7 +199,7 @@ public class MonthPage extends HttpServlet {
        String result = "" + Month.of(month);
        result = result.substring(0, 1).toUpperCase() + result.substring(1).toLowerCase();
        
-       result += " " + year + "</a></span> </th> </tr> <tr> <th>Sun</th> <th>Mon</th> <th>Tue</th> <th>Wed</th> <th>Thu</th> <th>Fri</th> <th>Sat</th> </tr> </thead> <tbody>";
+       result += " " + year + "</th> </tr> <tr> <th>Sun</th> <th>Mon</th> <th>Tue</th> <th>Wed</th> <th>Thu</th> <th>Fri</th> <th>Sat</th> </tr> </thead> <tbody>";
 
        int day = LocalDate.of(year, month, 1).getDayOfWeek().getValue();
        if (day != 7)
@@ -212,7 +229,7 @@ public class MonthPage extends HttpServlet {
         	   result += "</tr> <tr>";
            }
        }
-       return result + "</tr></tbody></table></div></div></div>";
+       return result + "</tr></tbody></table></div>";
    }
    
 }
