@@ -174,7 +174,7 @@ public class MonthPage extends HttpServlet {
 	      	+ "  		<option value=\"11\">November</option>\r\n"
 	      	+ "  		<option value=\"12\">December</option>\r\n"
       	    + "			</select> <br />"
-      		+ "		Year: <input type=\"text\" name=\"goToYear\"> <br />"
+      		+ "		Year: <input type=\"text\" name=\"goToYear\" > <br />"
       		+ "		"
       		+ "		<input type=\"submit\" value=\"Submit\" />"
       		+ "	</form>"
