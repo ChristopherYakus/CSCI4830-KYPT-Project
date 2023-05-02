@@ -138,7 +138,7 @@ public class MonthPage extends HttpServlet {
       		+ "<nav>\r\n"
       		+ "<form action=\"SearchEvent\" method=\"POST\">\r\n"
       		+ "<label for=\"search\">Search event:</label>\r\n"
-      		+ "  <input type=\"text\" id=\"searchTitle\" name=\"searchTitle\" size=\"1\">\r\n"
+      		+ "  <input type=\"text\" id=\"searchTitle\" name=\"searchTitle\" size=\"10\">\r\n"
       		+ "<input type=\"submit\" value=\"Submit\" />	</form>\r\n"
       		+ "</nav>";     
       docType += "<div> <table> <thead> <tr> <th colspan=\"7\">";
