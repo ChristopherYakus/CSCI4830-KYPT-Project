@@ -61,7 +61,7 @@ public class DayPage extends HttpServlet {
 		  rs = DB.get("((month = '" + request.getParameter("month") +
 				  "') AND (day = '" + request.getParameter("day") +
 				  "') AND (year = '" + request.getParameter("year") +
-				  "') AND (user = '" + loggedInUser + "') OR " +
+				  "') AND (user = \"" + loggedInUser + "\") OR " +
 				  "(month = '" + request.getParameter("month") +
 				  "') AND (day = '" + request.getParameter("day") +
 				  "') AND (year = '" + request.getParameter("year") +
@@ -69,7 +69,7 @@ public class DayPage extends HttpServlet {
 	  }
 	  System.out.println(request.getSession().getAttribute("user"));
 
-	
+	  /*
       Connection connection = null;
       try {
          DBConnection.getDBConnection(getServletContext());
@@ -78,7 +78,17 @@ public class DayPage extends HttpServlet {
       } catch (Exception e) {
          e.printStackTrace();
       }
-
+		*/
+	  
+	  for (DBResults res : rs)
+	  {
+             System.out.println("Title: " + res.getTitle());
+             System.out.println("User: " + res.getUser());
+             System.out.println("Month: " + res.getMonth());
+             System.out.println("Day: " + res.getDay());
+             System.out.println("Year: " + res.getYear() + "\n");
+	  }
+	  
       // Set response content type
       response.setContentType("text/html");
       PrintWriter out = response.getWriter();

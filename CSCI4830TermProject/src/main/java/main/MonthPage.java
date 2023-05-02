@@ -46,15 +46,7 @@ public class MonthPage extends HttpServlet {
 		  goToYear = "2000";
 			System.out.println("Year is null! Going to default value (2000).");
 	  }
-	
-	  /* 4/29/23 2:15 pm
-	   * MonthPage.java now works with currently logged in users.
-	   * Also fixed InsertBirthday.java.
-	   */
-	  
-	  // if current user does not exist or program is being mean, print all non-private aka non-user made events.
-	  // !!!! not finished. the above basically means holidays only, and i have yet to figure out how to do holidays, so
-	  
+ 
 	  DBController DB = new util.DBController(getServletContext());
 	  ArrayList<DBResults> rs;
 	  
@@ -72,13 +64,14 @@ public class MonthPage extends HttpServlet {
 	  {
 		  rs = DB.get("((month = '" + Integer.parseInt(goToMonth) +
 				  "') AND (year = '" + Integer.parseInt(goToYear) +
-				  "') AND (user = '" + loggedInUser + "') OR " +
+				  "') AND (user = \"" + loggedInUser + "\") OR " +
 				  "(month = '" + Integer.parseInt(goToMonth) +
 				  "') AND (year = '" + Integer.parseInt(goToYear) + 
 				  "') AND (user = 'holidays'))");
 	  }
 	  System.out.println(request.getSession().getAttribute("user"));
 	
+	  
 	  for (DBResults res : rs)
 	  {
              System.out.println("Title: " + res.getTitle());
@@ -89,7 +82,6 @@ public class MonthPage extends HttpServlet {
 	  }
 
       Connection connection = null;
-      PreparedStatement preparedStatement = null;
       try {
          DBConnection.getDBConnection(getServletContext());
          connection = DBConnection.connection;
@@ -140,13 +132,13 @@ public class MonthPage extends HttpServlet {
       		+ "\r\n"
       		+ "<body>\r\n"
       		+ "<header>\r\n"
-      		+ "<h1> Log In </h1>\r\n"
+      		+ "<h1>Calendar</h1>\r\n"
       		+ "</header>\r\n"
       		+ "\r\n"
       		+ "<nav>\r\n"
       		+ "<form action=\"SearchEvent\" method=\"POST\">\r\n"
       		+ "<label for=\"search\">Search event:</label>\r\n"
-      		+ "  <input type=\"text\" id=\"search\" name=\"search\" size=\"10\">\r\n"
+      		+ "  <input type=\"text\" id=\"searchTitle\" name=\"searchTitle\" size=\"1\">\r\n"
       		+ "<input type=\"submit\" value=\"Submit\" />	</form>\r\n"
       		+ "</nav>";     
       docType += "<div> <table> <thead> <tr> <th colspan=\"7\">";
@@ -174,7 +166,7 @@ public class MonthPage extends HttpServlet {
 	      	+ "  		<option value=\"11\">November</option>\r\n"
 	      	+ "  		<option value=\"12\">December</option>\r\n"
       	    + "			</select> <br />"
-      		+ "		Year: <input type=\"text\" name=\"goToYear\" > <br />"
+      		+ "		Year: <input type=\"text\" name=\"goToYear\" required><br />"
       		+ "		"
       		+ "		<input type=\"submit\" value=\"Submit\" />"
       		+ "	</form>"
@@ -211,12 +203,10 @@ public class MonthPage extends HttpServlet {
     	   /* If a day has an event, the text becomes hyperlinked. 
     	    */
     	   String dayAddition = "<td>" + i + "</td>";
-    	   String urlAddition = "";
     	   for (DBResults res : rs)
     	   {
     		   if (res.getDay() == i)
     		   {
-    			   urlAddition = "?month=" + res.getMonth() + "&day=" + res.getDay() + "&year=" + res.getYear();
     			   dayAddition = "<td><a href=/CSCI4830TermProject/DayPage?month=" +
     			   res.getMonth() + "&day=" + res.getDay() + "&year=" + res.getYear() + ">" + i + "</a></td>";
     			   //http://localhost:8080/CSCI4830TermProject/DayPage?month=10&day=29&year=2001
