@@ -84,6 +84,7 @@ public class DayPage extends HttpServlet {
 	  {
              System.out.println("Title: " + res.getTitle());
              System.out.println("User: " + res.getUser());
+             System.out.println("Hour&Minute: " + res.getHour() + ":" + res.getMinute());
              System.out.println("Month: " + res.getMonth());
              System.out.println("Day: " + res.getDay());
              System.out.println("Year: " + res.getYear() + "\n");
@@ -148,31 +149,50 @@ public class DayPage extends HttpServlet {
 	              + "		<form action=\"SearchEvent\" method=\"POST\">\r\n"
 	              + "	      	<label for=\"search\">Search event:</label>\r\n"
 	              + "	      	<input type=\"text\" id=\"searchTitle\" name=\"searchTitle\" size=\"10\" placeholder=\"Event Title\"><br>\r\n"
-	              + "	      	<input type=\"text\" id=\"searchYear\" name=\"searchYear\" size=\"2\" placeholder=\"Year\">\r\n"
+	              + "	      	<input type=\"text\" id=\"searchYear\" name=\"searchYear\" size=\"2\" placeholder=\"Year\" required>\r\n"
 	              + "	      	<input type=\"submit\" value=\"Submit\" />	\r\n"
 	              + "      	</form>\r\n"
 	              + "		<a href=\"/CSCI4830TermProject/LogOut\">Log Out</a> <br>\r\n"
 	              + "	</nav>"
 	              + "	<section>\r\n";
-      for (DBResults res : rs)
-	  {
-    	  docType += (res.getTitle() + "<br>" + 
-    			      "\"" + res.getMessage() + "\"<br>");
-    	  // If event is not all day, aka 0, state when the event starts (HH:MM)
-    	  if (res.getAllDay() == 0)
-    	  {
-    		  docType += ("This event starts at " + res.getHour() + ":" + res.getMinute() + ".<br><br>");
-    	  }
-    	  else 
-    	  {
-    		  docType += ("This event is an all day occurrence.<br><br>");
-    	  }
-	  }
+		String calculatedTime = "";
+		String calculatedMinute = "";
+		for (DBResults res : rs)
+		{
+			  if (res.getAllDay() == 0) 
+			  {
+				  // if minute = 0 ~ 9, then it should be displayed like XX:00 ~ XX:09
+				  if (res.getMinute() <= 9) {
+					  calculatedMinute = "0" + res.getMinute(); }
+				  else {
+					  calculatedMinute = "" + res.getMinute(); }
+				  // 12:00 AM
+				  if (res.getHour() == 0) {
+					  calculatedTime = "12:" + calculatedMinute + " am"; }
+				  // 12:00 PM
+				  else if (res.getHour() == 12) {
+					  calculatedTime = "12:" + calculatedMinute + " pm"; }
+				  // 1:00 AM - 11:00 AM
+				  else if (res.getHour() >= 1 && res.getHour() <= 11) {
+					  calculatedTime = (res.getHour() % 12) + ":" + calculatedMinute + " am"; }
+				  // 1:00 PM - 11:00 PM
+				  else if (res.getHour() >= 13 && res.getHour() <= 23) {
+					  calculatedTime = (res.getHour() % 12) + ":" + calculatedMinute + " pm"; } 
+			  }
+			  else
+			  {
+				  calculatedTime = "All Day Event";
+			  }
+			docType += ("<b>" + res.getTitle() + "</b> - " +
+						  res.getMonth() + "/" + res.getDay() + "/" + res.getYear() + 
+						  " - " + calculatedTime + "<br>" +
+		  			      "\"" + res.getMessage() + "\"<br><br>");
+		  }
 
       out.println(docType
     		  + "	</section>\r\n"
               + "	<footer>\r\n"
-              + "		Copyright\r\n"
+              + "		Team KYPP\r\n"
               + "	</footer>");
 
       //Should there be something here?

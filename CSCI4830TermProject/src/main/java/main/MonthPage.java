@@ -141,7 +141,7 @@ public class MonthPage extends HttpServlet {
             + "		<form action=\"SearchEvent\" method=\"POST\">\r\n"
             + "	      	<label for=\"search\">Search event:</label>\r\n"
             + "	      	<input type=\"text\" id=\"searchTitle\" name=\"searchTitle\" size=\"10\" placeholder=\"Event Title\"><br>\r\n"
-            + "	      	<input type=\"text\" id=\"searchYear\" name=\"searchYear\" size=\"2\" placeholder=\"Year\">\r\n"
+            + "	      	<input type=\"text\" id=\"searchYear\" name=\"searchYear\" size=\"2\" placeholder=\"Year\" required>\r\n"
             + "	      	<input type=\"submit\" value=\"Submit\" />	\r\n"
             + "      	</form>\r\n"
             + "		<a href=\"/CSCI4830TermProject/LogOut\">Log Out</a> <br>\r\n"
@@ -179,7 +179,7 @@ public class MonthPage extends HttpServlet {
       		+ "</section>");
       out.println("</body>\r\n"
       	+ "</html> <footer>\r\n"
-      	+ "Copyright\r\n"
+      	+ "Team KYPP\r\n"
       	+ "</footer>\r\n"
       	+ "</body>\r\n"
       	+ "</html>");

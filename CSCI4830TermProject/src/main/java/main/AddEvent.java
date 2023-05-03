@@ -113,7 +113,7 @@ public class AddEvent extends HttpServlet
 	              + "		<form action=\"SearchEvent\" method=\"POST\">\r\n"
 	              + "	      	<label for=\"search\">Search event:</label>\r\n"
 	              + "	      	<input type=\"text\" id=\"searchTitle\" name=\"searchTitle\" size=\"10\" placeholder=\"Event Title\"><br>\r\n"
-	              + "	      	<input type=\"text\" id=\"searchYear\" name=\"searchYear\" size=\"2\" placeholder=\"Year\">\r\n"
+	              + "	      	<input type=\"text\" id=\"searchYear\" name=\"searchYear\" size=\"2\" placeholder=\"Year\" required>\r\n"
 	              + "	      	<input type=\"submit\" value=\"Submit\" />	\r\n"
 	              + "      	</form>\r\n"
 	              + "		<a href=\"/CSCI4830TermProject/LogOut\">Log Out</a> <br>\r\n"
@@ -126,7 +126,7 @@ public class AddEvent extends HttpServlet
 	              + "		<a href=/CSCI4830TermProject/AddEvent.html>Add Another</a> <br>"
 	              + "	</section>\r\n"
 	              + "	<footer>\r\n"
-	              + "		Copyright\r\n"
+	              + "		Team KYPP\r\n"
 	              + "	</footer>");
 	
 	         out.println("</body>\r\n</html>");

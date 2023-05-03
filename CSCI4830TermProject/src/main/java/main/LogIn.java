@@ -61,19 +61,62 @@ public class LogIn extends HttpServlet {
 	         //Display a page indicating username or password is incorrect with a link back to login page
 	         String title = "Login Failed";
 	         String docType = "<!doctype html public \"-//w3c//dtd html 4.0 " + "transitional//en\">\n";
-	         out.println(docType + //
-	               "<html>\n" + //
-	               "<head><title>" + title + "</title></head>\n" + //
-	               "<body bgcolor=\"#f0f0f0\">\n" + //
-	               "<h2 align=\"center\">" + title + "</h2>\n" + //
-	               "<ul>\n" + //
-
-	               " <li> Username or Password incorrect. Try Again.\n" + //
-
-	               "</ul>\n");
-
-	          out.println("<a href=/CSCI4830TermProject/LogIn.html>Return to login</a> <br>");
-	          out.println("</body></html>");
+	         docType += "<html>\r\n"
+	         		+ "<head>\r\n"
+	         		+ "<style>\r\n"
+	         		+ "header {\r\n"
+	         		+ "    background-color:black;\r\n"
+	         		+ "    color:white;\r\n"
+	         		+ "    text-align:center;\r\n"
+	         		+ "    padding:5px;	 \r\n"
+	         		+ "}\r\n"
+	         		+ "nav {\r\n"
+	         		+ "    line-height:30px;\r\n"
+	         		+ "    background-color:#eeeeee;\r\n"
+	         		+ "    height:300px;\r\n"
+	         		+ "    width:100px;\r\n"
+	         		+ "    float:left;\r\n"
+	         		+ "    padding:5px;	      \r\n"
+	         		+ "}\r\n"
+	         		+ "section {\r\n"
+	         		+ "    width:350px;\r\n"
+	         		+ "    float:left;\r\n"
+	         		+ "    padding:10px;	 	 \r\n"
+	         		+ "}\r\n"
+	         		+ "footer {\r\n"
+	         		+ "    background-color:black;\r\n"
+	         		+ "    color:white;\r\n"
+	         		+ "    clear:both;\r\n"
+	         		+ "    text-align:center;\r\n"
+	         		+ "    padding:5px;	 	 \r\n"
+	         		+ "}\r\n"
+	         		+ "table, th, td {\r\n"
+	         		+ "    border:1px solid black;\r\n"
+	         		+ "}"
+	         		+ "</style>\r\n"
+	         		+ "</head>\r\n"
+	         		+ "\r\n"
+	         		+ "<body>\r\n"
+	         		+ "<header>\r\n"
+	         		+ "<h1>" + title + "</h1>\r\n"
+	         		+ "</header>\r\n"
+	         		+ "\r\n"
+	         		+ "	<nav>\r\n"
+	         		+ "<a href=/CSCI4830TermProject/SignUp.html>Sign Up</a> <br>"
+	                + "	</nav>"
+	         		+ "<section>"
+	         		+ "Username or password incorrect. Try Again.\n"
+	         		+ "</ul>\n"
+	         		+ "<br><br><a href=/CSCI4830TermProject/LogIn.html>Return to Log In</a> <br>"
+	         		+ "</section>"
+	                + "</body>\r\n"
+        	      	+ "</html> <footer>\r\n"
+        	      	+ "Team KYPP\r\n"
+        	      	+ "</footer>\r\n"
+        	      	+ "</body>\r\n"
+        	      	+ "</html>";
+	         
+	         out.println(docType);
 	         
 	         connection.close();        
 	      } catch (Exception e) {
