@@ -135,12 +135,17 @@ public class MonthPage extends HttpServlet {
       		+ "<h1>Calendar</h1>\r\n"
       		+ "</header>\r\n"
       		+ "\r\n"
-      		+ "<nav>\r\n"
-      		+ "<form action=\"SearchEvent\" method=\"POST\">\r\n"
-      		+ "<label for=\"search\">Search event:</label>\r\n"
-      		+ "  <input type=\"text\" id=\"searchTitle\" name=\"searchTitle\" size=\"10\">\r\n"
-      		+ "<input type=\"submit\" value=\"Submit\" />	</form>\r\n"
-      		+ "</nav>";     
+      		+ "	<nav>\r\n"
+            + "		<a href=\"/CSCI4830TermProject/HomePage.html\">Home</a> <br>\r\n"
+            + "		<a href=\"/CSCI4830TermProject/AddEvent.html\">Add Event</a> <br>\r\n"
+            + "		<form action=\"SearchEvent\" method=\"POST\">\r\n"
+            + "	      	<label for=\"search\">Search event:</label>\r\n"
+            + "	      	<input type=\"text\" id=\"searchTitle\" name=\"searchTitle\" size=\"10\" placeholder=\"Event Title\"><br>\r\n"
+            + "	      	<input type=\"text\" id=\"searchYear\" name=\"searchYear\" size=\"2\" placeholder=\"Year\">\r\n"
+            + "	      	<input type=\"submit\" value=\"Submit\" />	\r\n"
+            + "      	</form>\r\n"
+            + "		<a href=\"/CSCI4830TermProject/LogOut\">Log Out</a> <br>\r\n"
+            + "	</nav>";     
       docType += "<div> <table> <thead> <tr> <th colspan=\"7\">";
       docType += printMonth(Integer.parseInt(goToYear), Integer.parseInt(goToMonth), rs, response);
       

@@ -63,7 +63,59 @@ public class SearchEvent extends HttpServlet
 		String title = "Events that match " + request.getParameter("searchTitle");
 		
 		String docType = "<!doctype html public \"-//w3c//dtd html 4.0 " + "transitional//en\">\n";
-		docType += "<html>\n" + "<header><title>" + title + "</title></header>\n" + "<body bgcolor=\"#f0f0f0\">\n" + "<h2 align=\"center\">" + title + "</h2>\n";
+		docType += 
+				"<html>\n"
+				  + "<head>\r\n"
+	              + "		<style>\r\n"
+	              + "			header \r\n"
+	              + "			{\r\n"
+	              + "			    background-color:black;\r\n"
+	              + "			    color:white;\r\n"
+	              + "			    text-align:center;\r\n"
+	              + "			    padding:5px;	 \r\n"
+	              + "			}\r\n"
+	              + "			nav \r\n"
+	              + "			{\r\n"
+	              + "			    line-height:30px;\r\n"
+	              + "			    background-color:#eeeeee;\r\n"
+	              + "			    height:300px;\r\n"
+	              + "			    width:100px;\r\n"
+	              + "			    float:left;\r\n"
+	              + "			    padding:5px;	      \r\n"
+	              + "			}\r\n"
+	              + "			section \r\n"
+	              + "			{\r\n"
+	              + "			    width:500px;\r\n"
+	              + "			    float:left;\r\n"
+	              + "			    padding:10px;	 	 \r\n"
+	              + "			}\r\n"
+	              + "			footer \r\n"
+	              + "			{\r\n"
+	              + "			    background-color:black;\r\n"
+	              + "			    color:white;\r\n"
+	              + "			    clear:both;\r\n"
+	              + "			    text-align:center;\r\n"
+	              + "			    padding:5px;	 	 \r\n"
+	              + "			}\r\n"
+	              + "		</style>\r\n"
+	              + "		<title>" + title + "</title>"
+	              + "	</head>"
+	              + "<body>\n"
+	              + "	<header>\r\n"
+	              + "		<h1> " + title + " </h1>\r\n"
+	              + "	</header>\r\n"
+	              + "	<nav>\r\n"
+	              + "		<a href=\"/CSCI4830TermProject/HomePage.html\">Home</a> <br>\r\n"
+	              + "		<a href=\"/CSCI4830TermProject/AddEvent.html\">Add Event</a> <br>\r\n"
+	              + "		<form action=\"SearchEvent\" method=\"POST\">\r\n"
+	              + "	      	<label for=\"search\">Search event:</label>\r\n"
+	              + "	      	<input type=\"text\" id=\"searchTitle\" name=\"searchTitle\" size=\"10\" placeholder=\"Event Title\"><br>\r\n"
+	              + "	      	<input type=\"text\" id=\"searchYear\" name=\"searchYear\" size=\"2\" placeholder=\"Year\">\r\n"
+	              + "	      	<input type=\"submit\" value=\"Submit\" />	\r\n"
+	              + "      	</form>\r\n"
+	              + "		<a href=\"/CSCI4830TermProject/LogOut\">Log Out</a> <br>\r\n"
+	              + "	</nav>"
+	              + "	<section>\r\n";
 		
 		for (DBResults res : rs)
 		  {
@@ -89,9 +141,12 @@ public class SearchEvent extends HttpServlet
 		  	  }
 		  }
 	
-	     out.println(docType);
+	     out.println(docType
+	    		  + "	</section>\r\n"
+	              + "	<footer>\r\n"
+	              + "		Copyright\r\n"
+	              + "	</footer>");
 	
-	     out.println("<a href=/CSCI4830TermProject/AddEvent.html>Add Another</a> <br>");
 	     out.println("</body></html>");
 	}
 
